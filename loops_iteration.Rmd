@@ -1,0 +1,77 @@
+---
+title: "Loops and Iteration"
+author: "Jessica French"
+date: "2022-08-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+```
+```{r}
+library(tidyverse)
+```
+
+# `if` statements 
+
+```{r}
+burrito <- 2.4
+
+if (burrito > 3) {
+  print("I love burritos!")
+} 
+```
+
+```{r}
+my_ships <- c("Millenium Falcon", "X-wing", "Tie_fighter", "Death Star")
+
+str_detect(my_ships, pattern = "r") #goes through every value of the vector and checks for the value specified in pattern = 
+
+phrase <- "I love burritos"
+#can use any function in the if statement that returns TRUE or FALSE
+if (str_detect(phrase, "love")) {
+  print("I am a burrito fan.")
+}
+```
+## `if-else` statement
+```{r}
+pika <- 89.1
+
+if (pika > 60) {
+  print("mega pike")
+  } else {
+  print("Normal pika")
+  }
+
+```
+
+```{r}
+marmot <- 2.8
+
+if (marmot < 0.5) {
+  print("this is a small marmot")
+} else if (marmot >= 0.5 & marmot < 3) {
+  print("this is a medium marmot")
+} else (marmot > 3) {
+  print("this is a large marmot")
+}
+
+```
+
+
+
+```{r}
+tatooine_characters <- starwars |> 
+  filter(homeworld == "Tatooine")
+
+tatooine_characters
+
+#Use %in% operator to check for multiple positive matches
+
+tatooine_endor_naboo <- starwars |> 
+  filter(homeworld %in% c("Tatooine", "Naboo", "Endor"))
+
+#In words: does the vale in the homeworld variable for that row exist IN that vector c("Tatooine, "Naboo", "Endor)
+```
+

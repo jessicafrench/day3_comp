@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 ```{r}
 library(tidyverse)
+library(palmerpenguins)
 ```
 
 # `if` statements 
@@ -53,7 +54,7 @@ if (marmot < 0.5) {
   print("this is a small marmot")
 } else if (marmot >= 0.5 & marmot < 3) {
   print("this is a medium marmot")
-} else (marmot > 3) {
+} else if (marmot > 3) {
   print("this is a large marmot")
 }
 
@@ -73,5 +74,103 @@ tatooine_endor_naboo <- starwars |>
   filter(homeworld %in% c("Tatooine", "Naboo", "Endor"))
 
 #In words: does the vale in the homeworld variable for that row exist IN that vector c("Tatooine, "Naboo", "Endor)
+```
+
+```{r}
+git_pumped <- {function()
+  print("You got this!!")}
+```
+# Syntactic sugar
+- i.e. lets not reinvent the wheel
+  - apply() in base R
+  - dplyr:: across()
+  - {purrr} package, purrr.tidyverse.org for more info
+  
+# Example group_by() %>% summarize() to get summary stats for a group that you specify
+```{r}
+#mean bill length by speceis
+
+penguins |> #in penguins dataset
+  group_by(species, island) |>  #creates groups based on the species column also assumes that everything you do after this will be by group
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE)) #na.rm = TRUE removes na values so that it doesnt return na for the mean 
+
+#Find the mean and standard deviation of height in starwars grouped by homeworld
+
+starwars |> 
+  group_by(homeworld) |> 
+  summarize(mean_height = mean(height, na.rm = TRUE),
+            sd_height = sd(height, na.rm = TRUE))
+
+
+#Fidn teh max, min for flipper length, and sample siize fo each species of penguins
+
+penguins |> 
+  group_by(species, sex) |> 
+  summarize(min_flipper = min(flipper_length_mm, na.rm = TRUE),
+            max_flipper = max(flipper_length_mm, na.rm = TRUE),
+            sample_size = n())
+  
+#application of across
+penguins |> 
+  group_by(species, sex) |> 
+  summarize(across(where(is.numeric), mean, na.rm = TRUE)) #can also give a vector of function to do. Can also pass a vector of column names rather than a conditional that applys to the whole data frame. 
+```
+
+## A for loop with cumulative calculations
+
+```{r}
+tree_height <- c(1, 2, 6, 10, 14, 20, 45, 30, 12)
+
+for (i in seq_along(tree_height)) {
+  val = tree_height[i] + tree_height[i + 1]
+  print(val)
+}
+
+```
+## A for loop with a conditional statement 
+
+```{r}
+animal_ages <- vector(mode = "numeric", length = length(species))
+species <- c("dog", "elephant", "goat", "dog", "dog", "elephant")
+age_human <- c(3, 8, 4, 6, 12, 18)
+
+for (i in seq_along(species)) {
+  if (species[i] == "dog") {
+    animal_age <- age_human[i] * 7
+  } else if (species[i] == "elephant") {
+    animal_age <- age_human[i] * 0.88
+  } else if (species[i] == "goat") {
+    animal_age <- age_human[i] * 4.7
+  }
+  animal_ages[i] <- animal_age
+}
+
+```
+
+#For loops across data frames
+```{r}
+mean_mtcars <- vector(mode = "numeric", length = ncol(mtcars))
+
+for (i in seq_along(mtcars)) {
+  mean_val <- mean(mtcars[[i]], na.rm = TRUE)
+  mean_mtcars[i] <- mean_val
+}
+
+mean_mtcars
+```
+
+## Functional programming examples
+
+adding syntactic sugar (apply, across, map_df)
+
+```{r}
+apply(X = mtcars, MARGIN = 2, FUN = mean)
+```
+
+```{r}
+map(.x = mtcars, .f = mean)
+
+map_df(.x = mtcars, .f = mean)
 ```
 
